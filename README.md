@@ -3,7 +3,6 @@
 *****************************************************
 
 This python-assignment has offline html documentation.
-Open html directory and then open index.html.
-
+https://lamprospapav.github.io/simple_python_stackoverflow_api_demo/
 
 *****************************************************
