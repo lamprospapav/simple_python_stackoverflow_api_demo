@@ -1,0 +1,7 @@
+stackstats module
+=================
+
+.. automodule:: stackstats
+    :members:
+    :undoc-members:
+    :show-inheritance:

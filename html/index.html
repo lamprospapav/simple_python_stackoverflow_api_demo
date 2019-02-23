@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to Stackstats documentation! &mdash; Stackstats 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="stackapi module" href="stackapi.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> Stackstats
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="stackapi.html">stackapi module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stackstats.html">stackstats module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="options.html">options module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Stackstats</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Welcome to Stackstats documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-stackstats-documentation">
+<h1>Welcome to Stackstats documentation!<a class="headerlink" href="#welcome-to-stackstats-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This is small documention for StackStats. This program  is part of  Python-Assigment.
+It use the API of Stackoverflow to get some answer and comment data and calculate some statistics.</p>
+<p>&gt; Retrieve the StackOverflow answer data for a given date/time range from the StackExchange API
+(<a class="reference external" href="https://api.stackexchange.com/docs/answers">https://api.stackexchange.com/docs/answers</a>).</p>
+<p>&gt; Retrieve the comment data for a given set of answers (<a class="reference external" href="https://api.stackexchange.com/docs/comments">https://api.stackexchange.com/docs/comments</a>-­on-answers).</p>
+<p>&gt; For a given date/time range calculate:</p>
+<ul class="simple">
+<li>the total number of accepted answers.</li>
+<li>the average score for all the accepted answers.</li>
+<li>the average answer count per question.</li>
+<li>the comment count for each of the 10 answers with the highest score.</li>
+<li>Collect and return the calculated statistics in tabular, HTML or JSON form</li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="installation-and-run-instruction">
+<h1>Installation and Run Instruction<a class="headerlink" href="#installation-and-run-instruction" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">stackstats</span><span class="o">/</span>
+<span class="n">sudo</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="run-examples">
+<h2>Run examples<a class="headerlink" href="#run-examples" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">stacks</span> <span class="p">(</span><span class="o">-</span><span class="n">h</span> <span class="o">|</span> <span class="o">--</span><span class="n">help</span><span class="p">)</span>
+<span class="n">stacks</span> <span class="o">--</span><span class="n">stats</span> <span class="o">--</span><span class="n">since</span> <span class="s1">&#39;2016-06-02 10:00:00&#39;</span> <span class="o">--</span><span class="n">until</span> <span class="s1">&#39;2016-06-02 11:00:00&#39;</span> <span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="n">format</span> <span class="n">json</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This program tries to get  all the pages data that API send to us. If the package of data has ‘has_more’ at the end of the package it send a new request. This is the main reason that this programm is delayed to print the results.</p>
+</div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s1">&#39;has_more&#39;</span> <span class="ow">in</span> <span class="n">response</span> <span class="ow">and</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;has_more&#39;</span><span class="p">]:</span>
+    <span class="n">params</span><span class="p">[</span><span class="s2">&quot;page&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">break</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="output-example">
+<h2>Output Example:<a class="headerlink" href="#output-example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span>      <span class="p">{</span>
+      <span class="s2">&quot;average_answers_per_question&quot;</span><span class="o">:</span> <span class="mf">1.2152173913043478</span><span class="p">,</span>
+      <span class="s2">&quot;accepted_answers_average_score&quot;</span><span class="o">:</span> <span class="mf">3.3418367346938775</span><span class="p">,</span>
+      <span class="s2">&quot;total_accepted_answers&quot;</span><span class="o">:</span> <span class="mi">196</span><span class="p">,</span>
+      <span class="s2">&quot;top_ten_answers_comment_count&quot;</span><span class="o">:</span> <span class="p">{</span>
+              <span class="s2">&quot;37586304&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+              <span class="s2">&quot;37586434&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+              <span class="s2">&quot;37586820&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+              <span class="s2">&quot;37586346&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+              <span class="s2">&quot;37586700&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+              <span class="s2">&quot;37586413&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+              <span class="s2">&quot;37586547&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+              <span class="s2">&quot;37586871&quot;</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+              <span class="s2">&quot;37586557&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+              <span class="s2">&quot;37586623&quot;</span><span class="o">:</span> <span class="mi">0</span>
+      <span class="p">}</span>
+      <span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="stackapi.html">stackapi module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stackstats.html">stackstats module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="options.html">options module</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="table-of-contents">
+<h1>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Authors:</th><td class="field-body">Papavasileiou Lampros</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Version:</th><td class="field-body">1.0 of 2018/12/19</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="footnotes" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><a class="reference external" href="https://github.com/lamprospapav">https://github.com/lamprospapav</a></td></tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="stackapi.html" class="btn btn-neutral float-right" title="stackapi module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Papavasileiou Lampros
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>stackapi module &mdash; Stackstats 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="stackstats module" href="stackstats.html" />
+    <link rel="prev" title="Welcome to Stackstats documentation!" href="index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Stackstats
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">stackapi module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stackstats.html">stackstats module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="options.html">options module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Stackstats</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>stackapi module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/stackapi.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-stackapi">
+<span id="stackapi-module"></span><h1>stackapi module<a class="headerlink" href="#module-stackapi" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="stackapi.stacks">
+<em class="property">class </em><code class="descclassname">stackapi.</code><code class="descname">stacks</code><span class="sig-paren">(</span><em>name=None</em>, <em>version='2.2'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stackapi.html#stacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stackapi.stacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="stackapi.stacks.fetch_data">
+<code class="descname">fetch_data</code><span class="sig-paren">(</span><em>pre_site_method_url</em>, <em>params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stackapi.html#stacks.fetch_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stackapi.stacks.fetch_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the results of an API call.</p>
+<p>It builds the API query string and sends the request to Stack Exchange. If there are multiple
+pages of results, it use “has_more” to paginate the received data. If you want to use it you must
+first use an implementation pre_site_method. In this version supported:</p>
+<blockquote>
+<div><ul class="simple">
+<li>/answers</li>
+<li>/answers/{ids}</li>
+</ul>
+</div></blockquote>
+<p>Returned json data stored in a single dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pre_site_method_url</strong> – (string) This is a part of url API that is created from
+an implentation pre_site_method into this class. You can create it 
+if you use Per-Site Method as it descripted in <a class="reference external" href="http://api.stackexchange.com/docs">http://api.stackexchange.com/docs</a></li>
+<li><strong>params</strong> – (Dictionary). It has paramas that it used at the and of pre_site_method url</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="stackapi.stacks.stacks_answer">
+<code class="descname">stacks_answer</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stackapi.html#stacks.stacks_answer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stackapi.stacks.stacks_answer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Implementation pre_site_method:answers <a class="reference external" href="https://api.stackexchange.com/docs/answers">https://api.stackexchange.com/docs/answers</a></dt>
+<dd><p class="first">Returns all the undeleted answers in the system.
+The sorts accepted by this method operate on the following fields of the answer object:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>activity  last_activity_date</li>
+<li>creation  creation_date</li>
+<li>votes  score</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+<p>Returned pre_method_url and params that it can be used for this pre_method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Kwargs:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param pagesize:</th><td class="field-body">(int) (optional) The number of elements per page. The API limits this to
+a maximum of 100 items on all end points except <code class="docutils literal notranslate"><span class="pre">site</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">param page:</th><td class="field-body">(int) (optional) Nearly all methods in the API accept the page and pagesize
+parameters for fetching specific pages of results from the API.
+The default  page starts at and defaults to 1</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param fromdate:</th><td class="field-body">(datetime) (optional) ‘Datetime in format “YYYY-MM-DD” or “YYYY-MM-DD HH:mm”’
+The fromdate that api will provide results.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param todate:</th><td class="field-body">(datetime) (optional) ‘Datetime in format “YYYY-MM-DD” or “YYYY-MM-DD HH:mm”’
+The todate that api will provide results.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param min:</th><td class="field-body">(datetime) (optional) ‘Datetime in format “YYYY-MM-DD” or “YYYY-MM-DD HH:mm”’
+Min specify the range of a field must fall in (that field being specified by sort) 
+to be returned</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param max:</th><td class="field-body">(datetime) (optional) ‘Datetime in format “YYYY-MM-DD” or “YYYY-MM-DD HH:mm”’
+Max specify the range of a field must fall in (that field being specified by sort) 
+to be returned</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param sort:</th><td class="field-body">(str) (optional) The sorts accepted by this method
+The default value is ‘activity’</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param order:</th><td class="field-body">(str) (optional) The order accepted by this method
+The default value is ‘desc’</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="stackapi.stacks.stacks_comments_on_answers">
+<code class="descname">stacks_comments_on_answers</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stackapi.html#stacks.stacks_comments_on_answers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stackapi.stacks.stacks_comments_on_answers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation pre_site_method: /answers/{ids}/comments. <a class="reference external" href="https://api.stackexchange.com/docs/comments-on-answers">https://api.stackexchange.com/docs/comments-on-answers</a></p>
+<blockquote>
+<div><p>If you know that you have an answer id and need the comments, use this method.
+Gets the comments on a set of answers.
+The sorts accepted by this method operate on the following fields of the answer object:</p>
+<ul class="simple">
+<li>creation  creation_date</li>
+<li>votes  score</li>
+</ul>
+</div></blockquote>
+<p>Returned pre_method_url and params that it can be used for this pre_method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Kwargs:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param ids:</th><td class="field-body">(list) <a href="#id1"><span class="problematic" id="id2">**</span></a>(Required)**Python list with the answer ids that you need the comments.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param pagesize:</th><td class="field-body">(int) (optional) The number of elements per page. The API limits this to
+a maximum of 100 items on all end points except <code class="docutils literal notranslate"><span class="pre">site</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param page:</th><td class="field-body">(int) (optional) Nearly all methods in the API accept the page and pagesize
+parameters for fetching specific pages of results from the API.
+The default  page starts at and defaults to 1</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param fromdate:</th><td class="field-body">(datetime) (optional) ‘Datetime in format “YYYY-MM-DD” or “YYYY-MM-DD HH:mm”’
+The fromdate that api will provide results.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param todate:</th><td class="field-body">(datetime) (optional) ‘Datetime in format “YYYY-MM-DD” or “YYYY-MM-DD HH:mm”’
+The todate that api will provide results.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param fromdate:</th><td class="field-body">(datetime) (optional) ‘Datetime in format “YYYY-MM-DD” or “YYYY-MM-DD HH:mm”’
+The fromdate that api will provide results</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param min:</th><td class="field-body">(datetime) (optional) ‘Datetime in format “YYYY-MM-DD” or “YYYY-MM-DD HH:mm”’
+Min specify the range of a field must fall in (that field being specified by sort) 
+to be returned</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param max:</th><td class="field-body">(datetime) (optional) ‘Datetime in format “YYYY-MM-DD” or “YYYY-MM-DD HH:mm”’
+Max specify the range of a field must fall in (that field being specified by sort) 
+to be returned</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param sort:</th><td class="field-body">(str)(optional) The sorts accepted by this method
+The default value is ‘activity’</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param order:</th><td class="field-body">(str) (optional) The order accepted by this method
+The default value is ‘desc’</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="stackstats.html" class="btn btn-neutral float-right" title="stackstats module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to Stackstats documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Papavasileiou Lampros
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

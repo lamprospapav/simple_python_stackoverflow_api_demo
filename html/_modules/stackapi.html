@@ -1,0 +1,456 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>stackapi &mdash; Stackstats 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Stackstats
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../stackapi.html">stackapi module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stackstats.html">stackstats module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../options.html">options module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Stackstats</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>stackapi</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for stackapi</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">dateutil.parser</span> <span class="k">import</span> <span class="n">parse</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
+
+
+<div class="viewcode-block" id="stacks"><a class="viewcode-back" href="../stackapi.html#stackapi.stacks">[docs]</a><span class="k">class</span> <span class="nc">stacks</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;2.2&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The object used to interact with the Stack Exchange API</span>
+<span class="sd">        </span>
+<span class="sd">        :Args:</span>
+<span class="sd">            :param name:        (string) **(Required)** A valid ``api_site_parameter``</span>
+<span class="sd">                                (available from http://api.stackexchange.com/docs/sites) which will</span>
+<span class="sd">                                be used to connect to a particular site on the Stack Exchange</span>
+<span class="sd">                                Network.</span>
+<span class="sd">            </span>
+<span class="sd">            :param version:     (float) **(Required)** The version of the API you are connecting to.</span>
+<span class="sd">                                The default of ``2.2`` is the current version</span>
+<span class="sd">        :Kwargs:</span>
+<span class="sd">            :param pagesize:    (int) (optional) The number of elements per page. The API limits this to</span>
+<span class="sd">                                a maximum of 100 items on all end points except ``site``</span>
+<span class="sd">            </span>
+<span class="sd">            :param filter:      (str) (optional) There are a lot of filters provide by the Api.</span>
+<span class="sd">                                The default that it used here is &#39;default&#39;</span>
+<span class="sd">            </span>
+<span class="sd">            :param page:        (int) (optional) Nearly all methods in the API accept the page and pagesize</span>
+<span class="sd">                                parameters for fetching specific pages of results from the API.</span>
+<span class="sd">                                The default  page starts at and defaults to 1</span>
+
+<span class="sd">        This version support only kwargs = [pagesize,filter,page] any other input it will cause ValuError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No Site name provided&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_site</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="c1"># Valid kwargs</span>
+        <span class="n">kwargs_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;page&#39;</span><span class="p">,</span> <span class="s1">&#39;pagesize&#39;</span><span class="p">,</span> <span class="s1">&#39;filter&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs_keys</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Not a valid kwarg&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_body_url</span> <span class="o">=</span> <span class="s1">&#39;https://api.stackexchange.com/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="n">version</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pagesize</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pagesize&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;filter&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_page</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;page&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="stacks.fetch_data"><a class="viewcode-back" href="../stackapi.html#stackapi.stacks.fetch_data">[docs]</a>    <span class="k">def</span> <span class="nf">fetch_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pre_site_method_url</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the results of an API call.</span>
+
+<span class="sd">        It builds the API query string and sends the request to Stack Exchange. If there are multiple</span>
+<span class="sd">        pages of results, it use &quot;has_more&quot; to paginate the received data. If you want to use it you must</span>
+<span class="sd">        first use an implementation pre_site_method. In this version supported:</span>
+<span class="sd">                - /answers</span>
+<span class="sd">                - /answers/{ids}</span>
+
+<span class="sd">        Returned json data stored in a single dictionary.</span>
+
+<span class="sd">        :param pre_site_method_url: (string) This is a part of url API that is created from</span>
+<span class="sd">                                    an implentation pre_site_method into this class. You can create it </span>
+<span class="sd">                                    if you use Per-Site Method as it descripted in http://api.stackexchange.com/docs</span>
+
+
+<span class="sd">        :param params: (Dictionary). It has paramas that it used at the and of pre_site_method url</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Create the main body of Api url with the pre_site_method part</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_body_url</span><span class="p">,</span> <span class="n">pre_site_method_url</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># Request to api with the url that created and params</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;utf-8-sig&#39;</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+            <span class="c1"># If &#39;has_more&#39; at the end of the response</span>
+            <span class="c1"># param page increase by 1 and a new request is created</span>
+            <span class="k">if</span> <span class="s1">&#39;has_more&#39;</span> <span class="ow">in</span> <span class="n">response</span> <span class="ow">and</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;has_more&#39;</span><span class="p">]:</span>
+                <span class="n">params</span><span class="p">[</span><span class="s2">&quot;page&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="s1">&#39;error_id&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Api blocks me to get data.Api return error_name: throttle_violation&#39;</span><span class="p">)</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="n">r</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="stacks.stacks_answer"><a class="viewcode-back" href="../stackapi.html#stackapi.stacks.stacks_answer">[docs]</a>    <span class="k">def</span> <span class="nf">stacks_answer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implementation pre_site_method:answers https://api.stackexchange.com/docs/answers</span>
+<span class="sd">            Returns all the undeleted answers in the system.</span>
+<span class="sd">            The sorts accepted by this method operate on the following fields of the answer object:</span>
+
+<span class="sd">                - activity  last_activity_date</span>
+<span class="sd">                - creation  creation_date</span>
+<span class="sd">                - votes  score</span>
+
+<span class="sd">        Returned pre_method_url and params that it can be used for this pre_method.</span>
+
+<span class="sd">        :Kwargs:</span>
+<span class="sd">            :param pagesize:    (int) (optional) The number of elements per page. The API limits this to</span>
+<span class="sd">                                a maximum of 100 items on all end points except ``site``</span>
+<span class="sd">            </span>
+<span class="sd">            :param page:        (int) (optional) Nearly all methods in the API accept the page and pagesize</span>
+<span class="sd">                                parameters for fetching specific pages of results from the API.</span>
+<span class="sd">                                The default  page starts at and defaults to 1</span>
+<span class="sd">            </span>
+<span class="sd">            :param fromdate:    (datetime) (optional) &#39;Datetime in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm&quot;&#39;</span>
+<span class="sd">                                The fromdate that api will provide results. </span>
+<span class="sd">            </span>
+<span class="sd">            :param todate:      (datetime) (optional) &#39;Datetime in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm&quot;&#39;</span>
+<span class="sd">                                The todate that api will provide results.</span>
+<span class="sd">            </span>
+<span class="sd">            :param min:         (datetime) (optional) &#39;Datetime in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm&quot;&#39;</span>
+<span class="sd">                                Min specify the range of a field must fall in (that field being specified by sort) </span>
+<span class="sd">                                to be returned        </span>
+<span class="sd">            </span>
+<span class="sd">            :param max:         (datetime) (optional) &#39;Datetime in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm&quot;&#39;</span>
+<span class="sd">                                Max specify the range of a field must fall in (that field being specified by sort) </span>
+<span class="sd">                                to be returned    </span>
+<span class="sd">            </span>
+<span class="sd">            :param sort:        (str) (optional) The sorts accepted by this method</span>
+<span class="sd">                                The default value is &#39;activity&#39;</span>
+<span class="sd">            </span>
+<span class="sd">            :param order:       (str) (optional) The order accepted by this method</span>
+<span class="sd">                                The default value is &#39;desc&#39;             </span>
+<span class="sd">            &quot;&quot;&quot;</span>
+        <span class="c1"># Kwargs accepted keys</span>
+        <span class="n">kwargs_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;page&#39;</span><span class="p">,</span> <span class="s1">&#39;pagesize&#39;</span><span class="p">,</span> <span class="s1">&#39;fromdate&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;todate&#39;</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="s1">&#39;sort&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs_keys</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Not a valid kwarg&#39;</span><span class="p">)</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;page&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page</span><span class="p">)</span>
+        <span class="n">page_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;page_size&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pagesize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;asc&#39;</span><span class="p">,</span> <span class="s1">&#39;desc&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;asc&#39;</span><span class="p">,</span> <span class="s1">&#39;desc&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Given sort (</span><span class="si">{0}</span><span class="s2">) not valid! Expected sort &#39;activity&#39;,&#39;creation&#39;,&#39;votes&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sort</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sort&#39;</span><span class="p">,</span> <span class="s1">&#39;activity&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sort</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;activity&#39;</span><span class="p">,</span> <span class="s1">&#39;creation&#39;</span><span class="p">,</span> <span class="s1">&#39;votes&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Given sort (</span><span class="si">{0}</span><span class="s2">) not valid! Expected sort &#39;activity&#39;,&#39;creation&#39;,&#39;votes&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sort</span><span class="p">))</span>
+        <span class="c1"># Datetime must be convert to unix epoch time</span>
+        <span class="n">date_time_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fromdate&#39;</span><span class="p">,</span> <span class="s1">&#39;todate&#39;</span><span class="p">,</span> <span class="s1">&#39;since&#39;</span><span class="p">,</span> <span class="s1">&#39;until&#39;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">date_time_keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">datetime</span><span class="p">):</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">utctimetuple</span><span class="p">()))</span>
+                <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># pre_site_method url</span>
+        <span class="n">pre_site_method_url</span> <span class="o">=</span> <span class="s1">&#39;answers&#39;</span>
+        <span class="c1"># Params</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="n">page</span><span class="p">,</span>
+            <span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="n">page_size</span><span class="p">,</span>
+            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span><span class="p">,</span>
+            <span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span>
+            <span class="s2">&quot;site&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_site</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">pre_site_method_url</span></div>
+
+<div class="viewcode-block" id="stacks.stacks_comments_on_answers"><a class="viewcode-back" href="../stackapi.html#stackapi.stacks.stacks_comments_on_answers">[docs]</a>    <span class="k">def</span> <span class="nf">stacks_comments_on_answers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implementation pre_site_method: /answers/{ids}/comments. https://api.stackexchange.com/docs/comments-on-answers</span>
+
+<span class="sd">            If you know that you have an answer id and need the comments, use this method.</span>
+<span class="sd">            Gets the comments on a set of answers.</span>
+<span class="sd">            The sorts accepted by this method operate on the following fields of the answer object:</span>
+
+<span class="sd">            - creation  creation_date</span>
+<span class="sd">            - votes  score</span>
+
+<span class="sd">        Returned pre_method_url and params that it can be used for this pre_method.</span>
+
+<span class="sd">        :Kwargs:</span>
+<span class="sd">            :param ids:             (list) **(Required)**Python list with the answer ids that you need the comments.   </span>
+
+<span class="sd">            :param pagesize:        (int) (optional) The number of elements per page. The API limits this to</span>
+<span class="sd">                                    a maximum of 100 items on all end points except ``site``</span>
+
+<span class="sd">            :param page:            (int) (optional) Nearly all methods in the API accept the page and pagesize</span>
+<span class="sd">                                    parameters for fetching specific pages of results from the API.</span>
+<span class="sd">                                    The default  page starts at and defaults to 1</span>
+
+<span class="sd">            :param fromdate:        (datetime) (optional) &#39;Datetime in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm&quot;&#39;</span>
+<span class="sd">                                    The fromdate that api will provide results. </span>
+
+<span class="sd">            :param todate:          (datetime) (optional) &#39;Datetime in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm&quot;&#39;</span>
+<span class="sd">                                    The todate that api will provide results.</span>
+<span class="sd">            </span>
+<span class="sd">            :param fromdate:        (datetime) (optional) &#39;Datetime in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm&quot;&#39;</span>
+<span class="sd">                                    The fromdate that api will provide results</span>
+<span class="sd">            </span>
+<span class="sd">            :param min:             (datetime) (optional) &#39;Datetime in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm&quot;&#39;</span>
+<span class="sd">                                    Min specify the range of a field must fall in (that field being specified by sort) </span>
+<span class="sd">                                    to be returned        </span>
+<span class="sd">            </span>
+<span class="sd">            :param max:             (datetime) (optional) &#39;Datetime in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm&quot;&#39;</span>
+<span class="sd">                                    Max specify the range of a field must fall in (that field being specified by sort) </span>
+<span class="sd">                                    to be returned    </span>
+<span class="sd">            </span>
+<span class="sd">            :param sort:            (str)(optional) The sorts accepted by this method</span>
+<span class="sd">                                    The default value is &#39;activity&#39;</span>
+<span class="sd">            :param order:           (str) (optional) The order accepted by this method</span>
+<span class="sd">                                    The default value is &#39;desc&#39;</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+        <span class="n">kwargs_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;page&#39;</span><span class="p">,</span> <span class="s1">&#39;pagesize&#39;</span><span class="p">,</span> <span class="s1">&#39;fromdate&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;todate&#39;</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="s1">&#39;sort&#39;</span><span class="p">,</span> <span class="s1">&#39;ids&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs_keys</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Not a valid kwarg&#39;</span><span class="p">)</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;page&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page</span><span class="p">)</span>
+        <span class="n">page_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;page_size&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pagesize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;asc&#39;</span><span class="p">,</span> <span class="s1">&#39;desc&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;asc&#39;</span><span class="p">,</span> <span class="s1">&#39;desc&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Given sort (</span><span class="si">{0}</span><span class="s2">) not valid! Expected sort &#39;activity&#39;,&#39;creation&#39;,&#39;votes&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sort</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sort&#39;</span><span class="p">,</span> <span class="s1">&#39;creation&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sort</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;creation&#39;</span><span class="p">,</span> <span class="s1">&#39;votes&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Given sort (</span><span class="si">{0}</span><span class="s2">) not valid! Expected sort &#39;activity&#39;,&#39;creation&#39;,&#39;votes&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sort</span><span class="p">))</span>
+
+        <span class="n">date_time_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fromdate&#39;</span><span class="p">,</span> <span class="s1">&#39;todate&#39;</span><span class="p">,</span> <span class="s1">&#39;since&#39;</span><span class="p">,</span> <span class="s1">&#39;until&#39;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">date_time_keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">datetime</span><span class="p">):</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">utctimetuple</span><span class="p">()))</span>
+                <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;ids&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ids&#39;</span><span class="p">])</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;ids&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">pre_site_method_url</span> <span class="o">=</span> <span class="s2">&quot;answers/</span><span class="si">{}</span><span class="s2">/comments&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="n">page</span><span class="p">,</span>
+            <span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="n">page_size</span><span class="p">,</span>
+            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span><span class="p">,</span>
+            <span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span>
+            <span class="s2">&quot;site&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_site</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">pre_site_method_url</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Papavasileiou Lampros
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

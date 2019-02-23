@@ -1,0 +1,289 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>options &mdash; Stackstats 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Stackstats
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../stackapi.html">stackapi module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stackstats.html">stackstats module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../options.html">options module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Stackstats</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>options</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for options</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">argparse</span> <span class="k">import</span> <span class="n">ArgumentParser</span>
+<span class="kn">from</span> <span class="nn">argparse</span> <span class="k">import</span> <span class="n">ArgumentTypeError</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+
+
+<div class="viewcode-block" id="Options"><a class="viewcode-back" href="../options.html#options.Options">[docs]</a><span class="k">class</span> <span class="nc">Options</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	This class parse arguments.</span>
+<span class="sd">       </span>
+<span class="sd">	Argument Parser list:</span>
+<span class="sd">        </span>
+<span class="sd">        :Options:</span>
+
+
+<span class="sd">	--help             Argument parser description</span>
+<span class="sd">	</span>
+<span class="sd">	--stats		   Calculate Stackstats </span>
+<span class="sd">	</span>
+<span class="sd">	--since=datetime   Datetime fromdate in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm </span>
+<span class="sd">	</span>
+<span class="sd">	--until=datetime   Datetime todate in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm </span>
+<span class="sd">              arguments </span>
+<span class="sd">	--output-format    {json,html}</span>
+<span class="sd">                           Output in format json,html</span>
+
+<span class="sd">      </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_parser</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_init_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># construct the argument parse and parse the arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">ArgumentParser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--stats&#39;</span><span class="p">,</span>
+                                 <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+                                 <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                 <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Calculates some simple Stackoverflow statistics.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--since&#39;</span><span class="p">,</span>
+                                 <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;fromdate&#39;</span><span class="p">,</span>
+                                 <span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_date_type</span><span class="p">,</span>
+                                 <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                 <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                 <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Datetime in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm:ss&quot;&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--until&#39;</span><span class="p">,</span>
+                                 <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;todate&#39;</span><span class="p">,</span>
+                                 <span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_date_type</span><span class="p">,</span>
+                                 <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Datetime in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm:ss&quot;&#39;</span><span class="p">)</span>
+
+        <span class="n">output_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;json&#39;</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">,</span> <span class="s1">&#39;tabular&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--output-format&#39;</span><span class="p">,</span>
+                                 <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;output&#39;</span><span class="p">,</span>
+                                 <span class="n">choices</span><span class="o">=</span><span class="n">output_params</span><span class="p">,</span>
+                                 <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Output in format json,html,tabular&quot;&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Options.parse"><a class="viewcode-back" href="../options.html#options.Options.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method  parse args. Returns a Namespace object.Unknown args are ignored and</span>
+<span class="sd">        parse known args. </span>
+<span class="sd">	</span>
+<span class="sd">	Returns (Namespace_of_known, list_of_unknown)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># parse known args, returns a Namespace object</span>
+        <span class="c1"># unknown args are ignored</span>
+        <span class="c1"># Parse known args returns (Namespace_of_known, list_of_unknown)</span>
+        <span class="c1">#  temp = self.parser.parse_args(args)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">known</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unknown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">(</span><span class="n">args</span><span class="p">)[:]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unknown</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;*WARN* Unknown args received: &#39;</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unknown</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Options.valid_date_type"><a class="viewcode-back" href="../options.html#options.Options.valid_date_type">[docs]</a>    <span class="k">def</span> <span class="nf">valid_date_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg_date_str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method  parse args_date and raise Value Error if date format is not valid. </span>
+<span class="sd">        Datetime it must be in format &quot;YYYY-MM-DD&quot; or &quot;YYYY-MM-DD HH:mm:ss&quot;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">arg_date_str</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Given Date (</span><span class="si">{0}</span><span class="s2">) not valid! Expected format, YYYY-MM-DD or YYYY-MM-DD HH:mm:ss &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">arg_date_str</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">ArgumentTypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Papavasileiou Lampros
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

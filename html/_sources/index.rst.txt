@@ -1,0 +1,111 @@
+.. Stackstats documentation master file, created by
+   sphinx-quickstart on Wed Dec 19 01:04:50 2018.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to Stackstats documentation!
+======================================
+This is small documention for StackStats. This program  is part of Encode Python-Assigment.
+It use the API of Stackoverflow to get some answer and comment data and calculate some statistics.
+
+> Retrieve the StackOverflow answer data for a given date/time range from the StackExchange API
+(https://api.stackexchange.com/docs/answers).
+
+> Retrieve the comment data for a given set of answers (https://api.stackexchange.com/docs/comments-­on-answers).
+
+> For a given date/time range calculate:
+
+- the total number of accepted answers.
+- the average score for all the accepted answers.
+- the average answer count per question.
+- the comment count for each of the 10 answers with the highest score.
+- Collect and return the calculated statistics in tabular, HTML or JSON form
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+Installation and Run Instruction
+======================================
+
+.. code-block:: python
+   :linenos:
+   :emphasize-lines: 0
+   
+   cd stackstats/
+   sudo python setup.py install
+
+=============
+Run examples
+=============
+.. code-block:: python
+   :linenos:
+   :emphasize-lines: 0
+   
+   stacks (-h | --help)
+   stacks --stats --since '2016-06-02 10:00:00' --until '2016-06-02 11:00:00' --output-format json
+
+.. warning::  This program tries to get  all the pages data that API send to us. If the package of data has 'has_more' at the end of the package it send a new request. This is the main reason that this programm is delayed to print the results.
+	
+.. code-block:: python
+   :linenos:
+   :emphasize-lines: 0
+
+   if 'has_more' in response and response['has_more']:
+       params["page"] += 1
+   else:
+       break
+   	
+===============
+Output Example:
+===============
+
+.. code-block:: javascript
+  :linenos:
+
+	{  
+ 	"average_answers_per_question": 1.2152173913043478,
+    	"accepted_answers_average_score": 3.3418367346938775,
+    	"total_accepted_answers": 196,
+    	"top_ten_answers_comment_count": {
+        	"37586304": 0,
+       	 	"37586434": 0,
+        	"37586820": 0,
+        	"37586346": 0,
+        	"37586700": 0,
+        	"37586413": 0,
+        	"37586547": 0,
+        	"37586871": 2,
+        	"37586557": 0,
+        	"37586623": 0
+    	}
+	}
+
+============
+Classes
+============
+
+.. toctree::
+   :maxdepth: 2
+
+   stackapi
+   stackstats
+   options
+
+Table of Contents
+==================
+
+
+
+* :ref:`genindex` 
+* :ref:`modindex` 
+* :ref:`search`
+
+:Authors: 
+    Papavasileiou Lampros
+
+:Version: 1.0 of 2018/12/19 
+.. [#footnotes] https://github.com/lamprospapav
+
+
+

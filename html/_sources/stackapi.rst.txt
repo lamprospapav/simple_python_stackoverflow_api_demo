@@ -1,0 +1,7 @@
+stackapi module
+===============
+
+.. automodule:: stackapi
+    :members:
+    :undoc-members:
+    :show-inheritance:
